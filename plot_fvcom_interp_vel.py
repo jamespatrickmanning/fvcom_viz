@@ -13,14 +13,14 @@ import pandas as pd
 
 area='cc'
 #area='gs'#gulf stream
-case='hindcast'# vertically ave
+case='mthlymean'# hindcast (standard hourly gom3 fields), mean (vitalli), mthlymean(individual mths)vertically ave
 #case='forecast'
 flow='s' # 's'  for surface and 'a' for vertically averaged
 
 if case[0:4]=='mean':
     FNU='c:/users/james.manning/downloads/PT/gom3_u'+flow+'_'+case+'.npy' # vitalii's output
     FNV='c:/users/james.manning/downloads/PT/gom3_v'+flow+'_'+case+'.npy'
-else:
+elif case=='hindcast':
     dtime=dt(2015,6,7,6,0,0)
     FNU = dtime.strftime('%Y-%b-%d_%H:%M')
     layer='surface' 
@@ -28,6 +28,10 @@ else:
         url='http://www.smast.umassd.edu:8080/thredds/dodsC/fvcom/hindcasts/30yr_gom3'
     else:
         url = 'http://www.smast.umassd.edu:8080/thredds/dodsC/FVCOM/NECOFS/Forecasts/NECOFS_GOM3_FORECAST.nc'
+else:
+    # August 2015, for example
+    FNU='August_2015'
+    url='http://www.smast.umassd.edu:8080/thredds/dodsC/models/fvcom/NECOFS/Archive/Seaplan_33_Hindcast_v1/monthly_mean/gom3_monthly_mean_201508.nc'       
 
 if area=='gom':
     LON1=-71.;LON2=-64.+1.e-6;LAT1=39.0;LAT2=44.+1.e-6
@@ -607,12 +611,16 @@ if case[0:4]=='mean':
     va=np.load(FNV,mmap_mode='r')
     u=ua*1.
     v=va*1.
-else:
+elif case=='hindcast':
     nc = netCDF4.Dataset(url).variables
     time_var = nc['time']
     itime = netCDF4.date2index(dtime,time_var,select='nearest')
     u = nc['u'][itime,0,:]# surface fields
     v = nc['v'][itime,0,:]
+else:
+    nc = netCDF4.Dataset(url).variables
+    u = nc['u'][0,0,:]# surface fields
+    v = nc['v'][0,0,:]
 
 
 
