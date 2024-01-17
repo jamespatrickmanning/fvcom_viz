@@ -6,3 +6,6 @@ the coastline  are needed for some options
 see hardcodes at the top of the code.
 <p>
 The "Grid.npy" file was too big to store on Github so the grid parameters will need to be generated from the opendap-served model ouput files as done for example in plot_fvcom_surf_temp.py.
+<p>
+In Jan 2024, I made similar version called "contour_fvcom.py" when I was making modifications to "make_model_gif.py".
+
